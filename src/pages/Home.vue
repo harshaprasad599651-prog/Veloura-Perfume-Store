@@ -8,7 +8,7 @@ const { products, loading, errorMessage } = useProducts()
 
 const searchQuery = ref<string>('')
 const currentIndex = ref<number>(0)
-const slideDirection = ref<'left' | 'right'>('right')
+const slideDirection = ref<'next' | 'prev'>('next')
 
 const sliderImages = computed<string[]>(() =>
   products.value.slice(0, 5).map((product) => product.thumbnail),
@@ -16,13 +16,13 @@ const sliderImages = computed<string[]>(() =>
 
 const nextSlide = (): void => {
   if (sliderImages.value.length === 0) return
-  slideDirection.value = 'right'
+  slideDirection.value = 'next'
   currentIndex.value = (currentIndex.value + 1) % sliderImages.value.length
 }
 
 const prevSlide = (): void => {
   if (sliderImages.value.length === 0) return
-  slideDirection.value = 'left'
+  slideDirection.value = 'prev'
   currentIndex.value =
     (currentIndex.value - 1 + sliderImages.value.length) % sliderImages.value.length
 }
@@ -88,9 +88,9 @@ const filteredProducts = computed(() =>
 
           <!-- Left Image -->
           <div
-            :key="leftImage"
-            class="hidden h-72 w-56 overflow-hidden rounded-3xl opacity-35 shadow-xl transition duration-700 lg:block"
-            :class="slideDirection === 'right' ? 'slide-side-left' : 'slide-side-right'"
+            :key="`left-${leftImage}`"
+            class="hidden h-72 w-56 overflow-hidden rounded-3xl opacity-35 shadow-xl lg:block"
+            :class="slideDirection === 'next' ? 'left-next' : 'left-prev'"
           >
             <img
               :src="leftImage"
@@ -101,9 +101,9 @@ const filteredProducts = computed(() =>
 
           <!-- Center Image -->
           <div
-            :key="centerImage"
-            class="relative z-20 flex h-96 w-full max-w-3xl items-center justify-center overflow-hidden rounded-[40px] bg-white shadow-2xl transition duration-700"
-            :class="slideDirection === 'right' ? 'slide-center-right' : 'slide-center-left'"
+            :key="`center-${centerImage}`"
+            class="relative z-20 flex h-96 w-full max-w-3xl items-center justify-center overflow-hidden rounded-[40px] bg-white shadow-2xl"
+            :class="slideDirection === 'next' ? 'center-from-right' : 'center-from-left'"
           >
             <div
               class="absolute inset-0 rounded-[40px] bg-linear-to-br from-pink-300/30 via-white to-purple-300/30"
@@ -122,9 +122,9 @@ const filteredProducts = computed(() =>
 
           <!-- Right Image -->
           <div
-            :key="rightImage"
-            class="hidden h-72 w-56 overflow-hidden rounded-3xl opacity-35 shadow-xl transition duration-700 lg:block"
-            :class="slideDirection === 'right' ? 'slide-side-right' : 'slide-side-left'"
+            :key="`right-${rightImage}`"
+            class="hidden h-72 w-56 overflow-hidden rounded-3xl opacity-35 shadow-xl lg:block"
+            :class="slideDirection === 'next' ? 'right-next' : 'right-prev'"
           >
             <img
               :src="rightImage"
@@ -182,26 +182,35 @@ const filteredProducts = computed(() =>
 </template>
 
 <style scoped>
-.slide-center-right {
+.center-from-right {
   animation: centerFromRight 0.7s ease both;
 }
 
-.slide-center-left {
+.center-from-left {
   animation: centerFromLeft 0.7s ease both;
 }
 
-.slide-side-left {
-  animation: sideFromLeft 0.7s ease both;
+.left-next {
+  animation: leftNext 0.7s ease both;
 }
 
-.slide-side-right {
-  animation: sideFromRight 0.7s ease both;
+.right-next {
+  animation: rightNext 0.7s ease both;
 }
 
+.left-prev {
+  animation: leftPrev 0.7s ease both;
+}
+
+.right-prev {
+  animation: rightPrev 0.7s ease both;
+}
+
+/* Right button: right image comes to middle */
 @keyframes centerFromRight {
   from {
-    transform: translateX(120px) scale(0.9);
-    opacity: 0.5;
+    transform: translateX(220px) scale(0.85);
+    opacity: 0.35;
   }
 
   to {
@@ -210,10 +219,11 @@ const filteredProducts = computed(() =>
   }
 }
 
+/* Left button: left image comes to middle */
 @keyframes centerFromLeft {
   from {
-    transform: translateX(-120px) scale(0.9);
-    opacity: 0.5;
+    transform: translateX(-220px) scale(0.85);
+    opacity: 0.35;
   }
 
   to {
@@ -222,10 +232,11 @@ const filteredProducts = computed(() =>
   }
 }
 
-@keyframes sideFromLeft {
+/* Right button: carousel moves left */
+@keyframes leftNext {
   from {
-    transform: translateX(-80px) scale(1);
-    opacity: 0.7;
+    transform: translateX(220px) scale(1);
+    opacity: 1;
   }
 
   to {
@@ -234,10 +245,35 @@ const filteredProducts = computed(() =>
   }
 }
 
-@keyframes sideFromRight {
+@keyframes rightNext {
   from {
-    transform: translateX(80px) scale(1);
-    opacity: 0.7;
+    transform: translateX(220px) scale(0.9);
+    opacity: 0.15;
+  }
+
+  to {
+    transform: translateX(0) scale(0.9);
+    opacity: 0.35;
+  }
+}
+
+/* Left button: carousel moves right */
+@keyframes leftPrev {
+  from {
+    transform: translateX(-220px) scale(0.9);
+    opacity: 0.15;
+  }
+
+  to {
+    transform: translateX(0) scale(0.9);
+    opacity: 0.35;
+  }
+}
+
+@keyframes rightPrev {
+  from {
+    transform: translateX(-220px) scale(1);
+    opacity: 1;
   }
 
   to {
