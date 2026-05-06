@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import AppHeader from '../components/Layout/AppHeader.vue'
 import ProductList from '../components/product/ProductList.vue'
 import { useProducts } from '../composables/useProducts'
@@ -7,42 +7,44 @@ import { useProducts } from '../composables/useProducts'
 const { products, loading, errorMessage } = useProducts()
 
 const searchQuery = ref<string>('')
-const currentIndex = ref<number>(0)
-const slideDirection = ref<'next' | 'prev'>('next')
+const currentSlide = ref<number>(0)
 
-const sliderImages = computed<string[]>(() =>
-  products.value.slice(0, 5).map((product) => product.thumbnail),
-)
+let sliderTimer: number | undefined
+
+const heroSlides = [
+  {
+    title: 'SHOP A WIDE RANGE OF FRAGRANCES',
+    subtitle: 'Discover luxury perfumes crafted for elegance, confidence, and unforgettable moments.',
+    image: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=1600',
+  },
+  {
+    title: 'DON’T JUST WEAR A SCENT',
+    subtitle: 'Make a statement with premium fragrance collections from Veloura.',
+    image: 'https://images.unsplash.com/photo-1615634260167-c8cdede054de?q=80&w=1600',
+  },
+  {
+    title: 'LUXURY PERFUMES FOR EVERY STYLE',
+    subtitle: 'Explore men, women, and unisex fragrances with a modern premium feel.',
+    image: 'https://images.unsplash.com/photo-1619994403073-2cec844b8e63?q=80&w=1600',
+  },
+]
 
 const nextSlide = (): void => {
-  if (sliderImages.value.length === 0) return
-  slideDirection.value = 'next'
-  currentIndex.value = (currentIndex.value + 1) % sliderImages.value.length
+  currentSlide.value = (currentSlide.value + 1) % heroSlides.length
 }
 
-const prevSlide = (): void => {
-  if (sliderImages.value.length === 0) return
-  slideDirection.value = 'prev'
-  currentIndex.value =
-    (currentIndex.value - 1 + sliderImages.value.length) % sliderImages.value.length
+const goToSlide = (index: number): void => {
+  currentSlide.value = index
 }
 
-const leftImage = computed(() => {
-  const images = sliderImages.value
-  if (images.length === 0) return ''
-  return images[(currentIndex.value - 1 + images.length) % images.length]
+onMounted(() => {
+  sliderTimer = window.setInterval(nextSlide, 4000)
 })
 
-const centerImage = computed(() => {
-  const images = sliderImages.value
-  if (images.length === 0) return ''
-  return images[currentIndex.value]
-})
-
-const rightImage = computed(() => {
-  const images = sliderImages.value
-  if (images.length === 0) return ''
-  return images[(currentIndex.value + 1) % images.length]
+onUnmounted(() => {
+  if (sliderTimer !== undefined) {
+    window.clearInterval(sliderTimer)
+  }
 })
 
 const filteredProducts = computed(() =>
@@ -59,93 +61,55 @@ const filteredProducts = computed(() =>
   >
     <AppHeader />
 
-    <main class="mx-auto max-w-7xl px-6 py-12">
-      <!-- Hero Carousel -->
-      <section class="relative mt-8 overflow-hidden rounded-[40px] px-6 py-10">
-        <div
-          class="absolute inset-0 bg-linear-to-r from-pink-200/40 via-white to-purple-200/40 blur-3xl"
-        ></div>
+    <!-- Hero Slider -->
+    <section class="relative h-155 overflow-hidden">
+      <img
+        :src="heroSlides[currentSlide].image"
+        alt="Veloura perfume hero"
+        class="absolute inset-0 h-full w-full object-cover transition duration-700"
+      />
 
-        <p
-          v-if="loading"
-          class="relative z-10 text-center font-serif text-2xl text-pink-500"
-        >
-          Loading slider...
-        </p>
+      <div class="absolute inset-0 bg-linear-to-r from-black/70 via-black/30 to-pink-500/20"></div>
 
-        <div
-          v-else
-          class="relative z-10 flex items-center justify-center gap-10"
-        >
-          <!-- Left Button -->
-          <button
-            type="button"
-            class="absolute left-4 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-white/90 text-3xl text-gray-500 shadow-xl transition duration-300 hover:scale-110 hover:text-pink-500 hover:shadow-[0_0_25px_rgba(236,72,153,0.6)]"
-            @click="prevSlide"
+      <div class="relative z-10 mx-auto flex h-full max-w-7xl items-center px-6">
+        <div class="max-w-3xl">
+          <p class="mb-4 font-serif text-xl font-semibold tracking-[0.3em] text-pink-200">
+            VELOURA PERFUME STORE
+          </p>
+
+          <h1 class="font-serif text-6xl font-extrabold uppercase leading-tight text-white drop-shadow-lg md:text-7xl">
+            {{ heroSlides[currentSlide].title }}
+          </h1>
+
+          <p class="mt-6 max-w-2xl text-lg text-pink-100">
+            {{ heroSlides[currentSlide].subtitle }}
+          </p>
+
+          <a
+            href="#perfumes"
+            class="mt-8 inline-block rounded-full bg-pink-500 px-8 py-3 font-semibold text-white shadow-[0_0_25px_rgba(236,72,153,0.7)] transition hover:scale-105 hover:bg-pink-600"
           >
-            ←
-          </button>
-
-          <!-- Left Image -->
-          <div
-            :key="`left-${leftImage}`"
-            class="hidden h-72 w-56 overflow-hidden rounded-3xl opacity-35 shadow-xl lg:block"
-            :class="slideDirection === 'next' ? 'left-next' : 'left-prev'"
-          >
-            <img
-              :src="leftImage"
-              alt="Previous perfume"
-              class="h-full w-full object-contain"
-            />
-          </div>
-
-          <!-- Center Image -->
-          <div
-            :key="`center-${centerImage}`"
-            class="relative z-20 flex h-96 w-full max-w-3xl items-center justify-center overflow-hidden rounded-[40px] bg-white shadow-2xl"
-            :class="slideDirection === 'next' ? 'center-from-right' : 'center-from-left'"
-          >
-            <div
-              class="absolute inset-0 rounded-[40px] bg-linear-to-br from-pink-300/30 via-white to-purple-300/30"
-            ></div>
-
-            <img
-              :src="centerImage"
-              alt="Highlighted perfume"
-              class="relative z-10 h-full w-full object-contain p-8"
-            />
-
-            <div
-              class="pointer-events-none absolute inset-0 rounded-[40px] shadow-[0_0_70px_rgba(236,72,153,0.9)]"
-            ></div>
-          </div>
-
-          <!-- Right Image -->
-          <div
-            :key="`right-${rightImage}`"
-            class="hidden h-72 w-56 overflow-hidden rounded-3xl opacity-35 shadow-xl lg:block"
-            :class="slideDirection === 'next' ? 'right-next' : 'right-prev'"
-          >
-            <img
-              :src="rightImage"
-              alt="Next perfume"
-              class="h-full w-full object-contain"
-            />
-          </div>
-
-          <!-- Right Button -->
-          <button
-            type="button"
-            class="absolute right-4 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-white/90 text-3xl text-gray-500 shadow-xl transition duration-300 hover:scale-110 hover:text-pink-500 hover:shadow-[0_0_25px_rgba(236,72,153,0.6)]"
-            @click="nextSlide"
-          >
-            →
-          </button>
+            Shop Collection
+          </a>
         </div>
-      </section>
+      </div>
 
+      <!-- Slider Dots -->
+      <div class="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 gap-3 rounded-full bg-white/90 px-5 py-3 shadow">
+        <button
+          v-for="(_, index) in heroSlides"
+          :key="index"
+          type="button"
+          class="h-3 w-3 rounded-full transition"
+          :class="index === currentSlide ? 'bg-cyan-500 scale-125' : 'bg-gray-500'"
+          @click="goToSlide(index)"
+        ></button>
+      </div>
+    </section>
+
+    <main class="mx-auto max-w-7xl px-6 py-14">
       <!-- Search -->
-      <div class="mt-12 flex justify-center">
+      <div class="flex justify-center">
         <input
           v-model="searchQuery"
           type="text"
@@ -154,10 +118,28 @@ const filteredProducts = computed(() =>
         />
       </div>
 
+      <!-- Categories -->
+      <section class="mt-14 grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div class="rounded-3xl bg-linear-to-br from-pink-400 to-rose-500 p-8 text-white shadow-xl transition hover:-translate-y-2">
+          <h2 class="font-serif text-3xl font-bold">Women</h2>
+          <p class="mt-2 text-pink-100">Elegant floral and sweet luxury scents.</p>
+        </div>
+
+        <div class="rounded-3xl bg-linear-to-br from-slate-900 to-purple-900 p-8 text-white shadow-xl transition hover:-translate-y-2">
+          <h2 class="font-serif text-3xl font-bold">Men</h2>
+          <p class="mt-2 text-gray-300">Bold, fresh, and confident fragrances.</p>
+        </div>
+
+        <div class="rounded-3xl bg-linear-to-br from-cyan-500 to-pink-500 p-8 text-white shadow-xl transition hover:-translate-y-2">
+          <h2 class="font-serif text-3xl font-bold">Unisex</h2>
+          <p class="mt-2 text-white/90">Modern perfumes for every personality.</p>
+        </div>
+      </section>
+
       <!-- Products -->
-      <section id="perfumes" class="mt-14">
+      <section id="perfumes" class="mt-16">
         <h2 class="mb-8 text-center font-serif text-4xl font-bold text-pink-600">
-          Explore Our Perfumes
+          Featured Perfumes
         </h2>
 
         <p v-if="loading" class="text-center text-lg text-gray-600">
@@ -180,105 +162,3 @@ const filteredProducts = computed(() =>
     </main>
   </div>
 </template>
-
-<style scoped>
-.center-from-right {
-  animation: centerFromRight 0.7s ease both;
-}
-
-.center-from-left {
-  animation: centerFromLeft 0.7s ease both;
-}
-
-.left-next {
-  animation: leftNext 0.7s ease both;
-}
-
-.right-next {
-  animation: rightNext 0.7s ease both;
-}
-
-.left-prev {
-  animation: leftPrev 0.7s ease both;
-}
-
-.right-prev {
-  animation: rightPrev 0.7s ease both;
-}
-
-/* Right button: right image comes to middle */
-@keyframes centerFromRight {
-  from {
-    transform: translateX(220px) scale(0.85);
-    opacity: 0.35;
-  }
-
-  to {
-    transform: translateX(0) scale(1);
-    opacity: 1;
-  }
-}
-
-/* Left button: left image comes to middle */
-@keyframes centerFromLeft {
-  from {
-    transform: translateX(-220px) scale(0.85);
-    opacity: 0.35;
-  }
-
-  to {
-    transform: translateX(0) scale(1);
-    opacity: 1;
-  }
-}
-
-/* Right button: carousel moves left */
-@keyframes leftNext {
-  from {
-    transform: translateX(220px) scale(1);
-    opacity: 1;
-  }
-
-  to {
-    transform: translateX(0) scale(0.9);
-    opacity: 0.35;
-  }
-}
-
-@keyframes rightNext {
-  from {
-    transform: translateX(220px) scale(0.9);
-    opacity: 0.15;
-  }
-
-  to {
-    transform: translateX(0) scale(0.9);
-    opacity: 0.35;
-  }
-}
-
-/* Left button: carousel moves right */
-@keyframes leftPrev {
-  from {
-    transform: translateX(-220px) scale(0.9);
-    opacity: 0.15;
-  }
-
-  to {
-    transform: translateX(0) scale(0.9);
-    opacity: 0.35;
-  }
-}
-
-@keyframes rightPrev {
-  from {
-    transform: translateX(-220px) scale(1);
-    opacity: 1;
-  }
-
-  to {
-    transform: translateX(0) scale(0.9);
-    opacity: 0.35;
-  }
-}
-</style>
