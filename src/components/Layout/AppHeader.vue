@@ -46,10 +46,14 @@
           🌙
         </button>
 
-        <button class="h-8 rounded-full bg-white px-4 text-[14px] font-semibold text-pink-600 shadow hover:bg-pink-50">
-          LOGIN
-        </button>
+      <RouterLink
+        to="/login"
+        class="h-8 rounded-full bg-white px-4 py-1.5 text-[14px] font-semibold text-pink-600 shadow hover:bg-pink-50"
+      >
+        LOGIN
+      </RouterLink>
       </div>
+      
     </div>
   </header>
 </template>

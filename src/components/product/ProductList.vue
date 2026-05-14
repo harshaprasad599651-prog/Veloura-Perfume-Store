@@ -1,61 +1,22 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import type { Product } from '../../types/product'
 
 interface Props {
   products: Product[]
 }
 
-const props = defineProps<Props>()
-
-// 👉 Add 3 custom products
-const extraProducts: Product[] = [
-  {
-    id: 1001,
-    title: 'Veloura Midnight Bloom',
-    description: '',
-    price: 79,
-    brand: 'Veloura',
-    category: 'fragrance',
-    thumbnail: 'https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd?q=80&w=400',
-    images: [],
-  },
-  {
-    id: 1002,
-    title: 'Rose Velvet Essence',
-    description: '',
-    price: 89,
-    brand: 'Veloura',
-    category: 'fragrance',
-    thumbnail: 'https://images.unsplash.com/photo-1585386959984-a41552231658?q=80&w=400',
-    images: [],
-  },
-  {
-    id: 1003,
-    title: 'Golden Aura Perfume',
-    description: '',
-    price: 99,
-    brand: 'Veloura',
-    category: 'fragrance',
-    thumbnail: 'https://images.unsplash.com/photo-1615634260167-c8cdede054de?q=80&w=400',
-    images: [],
-  },
-]
-
-// 👉 Combine API + custom
-const allProducts = computed(() => [...props.products, ...extraProducts])
+defineProps<Props>()
 </script>
 
 <template>
   <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
     <article
-      v-for="product in allProducts"
+      v-for="product in products"
       :key="product.id"
-      class="group rounded-2xl p-0.5 bg-linear-to-r from-pink-400 via-purple-400 to-yellow-300 transition duration-300 hover:scale-105"
+      class="group rounded-2xl bg-linear-to-r from-pink-400 via-purple-400 to-yellow-300 p-0.5 transition duration-300 hover:scale-105"
     >
-      <!-- Inner Card -->
       <div
-        class="h-full rounded-2xl bg-white/80 backdrop-blur-lg p-5 text-center shadow-lg transition duration-300 group-hover:shadow-[0_0_25px_rgba(236,72,153,0.7)]"
+        class="h-full rounded-2xl bg-white/80 p-5 text-center shadow-lg backdrop-blur-lg transition duration-300 group-hover:shadow-[0_0_25px_rgba(236,72,153,0.7)]"
       >
         <img
           :src="product.thumbnail"

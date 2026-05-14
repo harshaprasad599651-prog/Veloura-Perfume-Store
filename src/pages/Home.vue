@@ -14,18 +14,24 @@ let sliderTimer: number | undefined
 const heroSlides = [
   {
     title: 'SHOP A WIDE RANGE OF FRAGRANCES',
-    subtitle: 'Discover luxury perfumes crafted for elegance, confidence, and unforgettable moments.',
-    image: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=1600',
+    subtitle:
+      'Discover luxury perfumes crafted for elegance, confidence, and unforgettable moments.',
+    image:
+      'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=1600',
   },
   {
     title: 'DON’T JUST WEAR A SCENT',
-    subtitle: 'Make a statement with premium fragrance collections from Veloura.',
-    image: 'https://images.unsplash.com/photo-1615634260167-c8cdede054de?q=80&w=1600',
+    subtitle:
+      'Make a statement with premium fragrance collections from Veloura.',
+    image:
+      'https://images.unsplash.com/photo-1615634260167-c8cdede054de?q=80&w=1600',
   },
   {
     title: 'LUXURY PERFUMES FOR EVERY STYLE',
-    subtitle: 'Explore men, women, and unisex fragrances with a modern premium feel.',
-    image: 'https://images.unsplash.com/photo-1619994403073-2cec844b8e63?q=80&w=1600',
+    subtitle:
+      'Explore men, women, and unisex fragrances with a modern premium feel.',
+    image:
+      'https://images.unsplash.com/photo-1619994403073-2cec844b8e63?q=80&w=1600',
   },
 ]
 
@@ -61,52 +67,74 @@ const filteredProducts = computed(() =>
   >
     <AppHeader />
 
-    <!-- Hero Slider -->
-    <section class="relative h-155 overflow-hidden">
+    <!-- PREMIUM HERO SECTION -->
+    <section class="relative h-[85vh] overflow-hidden">
+      <!-- Background Image -->
       <img
         :src="heroSlides[currentSlide].image"
         alt="Veloura perfume hero"
         class="absolute inset-0 h-full w-full object-cover transition duration-700"
       />
 
-      <div class="absolute inset-0 bg-linear-to-r from-black/70 via-black/30 to-pink-500/20"></div>
+      <!-- Dark Overlay -->
+      <div
+        class="absolute inset-0 bg-linear-to-r from-black/75 via-black/40 to-pink-500/20"
+      ></div>
 
-      <div class="relative z-10 mx-auto flex h-full max-w-7xl items-center px-6">
-        <div class="max-w-3xl">
-          <p class="mb-4 font-serif text-xl font-semibold tracking-[0.3em] text-pink-200">
-            VELOURA PERFUME STORE
-          </p>
+      <!-- Center Content -->
+      <div
+        class="absolute inset-0 z-10 flex flex-col items-center justify-center px-6 text-center"
+      >
+        <!-- Small Title -->
+        <p
+          class="mb-6 font-serif text-[24px] font-semibold tracking-[0.35em] text-pink-100 drop-shadow-[0_2px_10px_rgba(255,192,203,0.6)]"
+        >
+          VELOURA PERFUME STORE
+        </p>
 
-          <h1 class="font-serif text-6xl font-extrabold uppercase leading-tight text-white drop-shadow-lg md:text-7xl">
-            {{ heroSlides[currentSlide].title }}
-          </h1>
+        <!-- Main Heading -->
+        <h1
+          class="max-w-6xl text-5xl font-extrabold uppercase leading-tight text-white drop-shadow-[0_6px_20px_rgba(0,0,0,0.8)] md:text-8xl"
+        >
+          {{ heroSlides[currentSlide].title }}
+        </h1>
 
-          <p class="mt-6 max-w-2xl text-lg text-pink-100">
-            {{ heroSlides[currentSlide].subtitle }}
-          </p>
+        <!-- Subtitle -->
+        <p
+          class="mt-8 max-w-3xl text-xl text-pink-50 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] md:text-2xl"
+        >
+          {{ heroSlides[currentSlide].subtitle }}
+        </p>
 
-          <a
-            href="#perfumes"
-            class="mt-8 inline-block rounded-full bg-pink-500 px-8 py-3 font-semibold text-white shadow-[0_0_25px_rgba(236,72,153,0.7)] transition hover:scale-105 hover:bg-pink-600"
-          >
-            Shop Collection
-          </a>
-        </div>
+        <!-- Premium Button -->
+        <a
+          href="#perfumes"
+          class="mt-8 rounded-full bg-linear-to-r from-pink-500 via-fuchsia-500 to-purple-600 px-7 py-2.5 text-sm font-semibold text-white shadow-[0_0_18px_rgba(236,72,153,0.7)] transition duration-300 hover:scale-105 hover:shadow-[0_0_28px_rgba(217,70,239,1)]"
+        >
+          Shop Collection
+        </a>
       </div>
 
       <!-- Slider Dots -->
-      <div class="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 gap-3 rounded-full bg-white/90 px-5 py-3 shadow">
+      <div
+        class="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 gap-3 rounded-full bg-white/90 px-5 py-3 shadow-xl"
+      >
         <button
           v-for="(_, index) in heroSlides"
           :key="index"
           type="button"
-          class="h-3 w-3 rounded-full transition"
-          :class="index === currentSlide ? 'bg-cyan-500 scale-125' : 'bg-gray-500'"
+          class="h-3 w-3 rounded-full transition duration-300"
+          :class="
+            index === currentSlide
+              ? 'scale-125 bg-cyan-500'
+              : 'bg-gray-500'
+          "
           @click="goToSlide(index)"
         ></button>
       </div>
     </section>
 
+    <!-- MAIN -->
     <main class="mx-auto max-w-7xl px-6 py-14">
       <!-- Search -->
       <div class="flex justify-center">
@@ -120,25 +148,39 @@ const filteredProducts = computed(() =>
 
       <!-- Categories -->
       <section class="mt-14 grid grid-cols-1 gap-8 md:grid-cols-3">
-        <div class="rounded-3xl bg-linear-to-br from-pink-400 to-rose-500 p-8 text-white shadow-xl transition hover:-translate-y-2">
+        <div
+          class="rounded-3xl bg-linear-to-br from-pink-400 to-rose-500 p-8 text-white shadow-xl transition duration-300 hover:-translate-y-2 hover:shadow-[0_0_25px_rgba(244,114,182,0.8)]"
+        >
           <h2 class="font-serif text-3xl font-bold">Women</h2>
-          <p class="mt-2 text-pink-100">Elegant floral and sweet luxury scents.</p>
+          <p class="mt-2 text-pink-100">
+            Elegant floral and sweet luxury scents.
+          </p>
         </div>
 
-        <div class="rounded-3xl bg-linear-to-br from-slate-900 to-purple-900 p-8 text-white shadow-xl transition hover:-translate-y-2">
+        <div
+          class="rounded-3xl bg-linear-to-br from-slate-900 to-purple-900 p-8 text-white shadow-xl transition duration-300 hover:-translate-y-2 hover:shadow-[0_0_25px_rgba(168,85,247,0.8)]"
+        >
           <h2 class="font-serif text-3xl font-bold">Men</h2>
-          <p class="mt-2 text-gray-300">Bold, fresh, and confident fragrances.</p>
+          <p class="mt-2 text-gray-300">
+            Bold, fresh, and confident fragrances.
+          </p>
         </div>
 
-        <div class="rounded-3xl bg-linear-to-br from-cyan-500 to-pink-500 p-8 text-white shadow-xl transition hover:-translate-y-2">
+        <div
+          class="rounded-3xl bg-linear-to-br from-cyan-500 to-pink-500 p-8 text-white shadow-xl transition duration-300 hover:-translate-y-2 hover:shadow-[0_0_25px_rgba(6,182,212,0.8)]"
+        >
           <h2 class="font-serif text-3xl font-bold">Unisex</h2>
-          <p class="mt-2 text-white/90">Modern perfumes for every personality.</p>
+          <p class="mt-2 text-white/90">
+            Modern perfumes for every personality.
+          </p>
         </div>
       </section>
 
       <!-- Products -->
       <section id="perfumes" class="mt-16">
-        <h2 class="mb-8 text-center font-serif text-4xl font-bold text-pink-600">
+        <h2
+          class="mb-8 text-center font-serif text-4xl font-bold text-pink-600"
+        >
           Featured Perfumes
         </h2>
 
