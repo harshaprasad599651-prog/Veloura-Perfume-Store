@@ -148,14 +148,15 @@ const filteredProducts = computed(() =>
 
       <!-- Categories -->
       <section class="mt-14 grid grid-cols-1 gap-8 md:grid-cols-3">
-        <div
+        <RouterLink
+          to="/women"
           class="rounded-3xl bg-linear-to-br from-pink-400 to-rose-500 p-8 text-white shadow-xl transition duration-300 hover:-translate-y-2 hover:shadow-[0_0_25px_rgba(244,114,182,0.8)]"
         >
           <h2 class="font-serif text-3xl font-bold">Women</h2>
           <p class="mt-2 text-pink-100">
             Elegant floral and sweet luxury scents.
           </p>
-        </div>
+        </RouterLink>
 
         <div
           class="rounded-3xl bg-linear-to-br from-slate-900 to-purple-900 p-8 text-white shadow-xl transition duration-300 hover:-translate-y-2 hover:shadow-[0_0_25px_rgba(168,85,247,0.8)]"

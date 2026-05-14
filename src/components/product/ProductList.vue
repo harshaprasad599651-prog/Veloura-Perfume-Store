@@ -1,11 +1,20 @@
 <script setup lang="ts">
+
 import type { Product } from '../../types/product'
+import { useCart } from '../../composables/useCart'
 
 interface Props {
   products: Product[]
 }
 
 defineProps<Props>()
+
+
+const { addToCart } = useCart()
+
+const handleAddToCart = (product: Product): void => {
+  addToCart(product)
+}
 </script>
 
 <template>
@@ -13,11 +22,9 @@ defineProps<Props>()
     <article
       v-for="product in products"
       :key="product.id"
-      class="group rounded-2xl bg-linear-to-r from-pink-400 via-purple-400 to-yellow-300 p-0.5 transition duration-300 hover:scale-105"
-    >
+        class="group rounded-2xl border border-pink-100 bg-white transition duration-300 hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(236,72,153,0.18)]"    >
       <div
-        class="h-full rounded-2xl bg-white/80 p-5 text-center shadow-lg backdrop-blur-lg transition duration-300 group-hover:shadow-[0_0_25px_rgba(236,72,153,0.7)]"
-      >
+        class="h-full rounded-2xl bg-[#fff8fc] p-5 text-center transition duration-300"      >
         <img
           :src="product.thumbnail"
           :alt="product.title"
@@ -36,11 +43,16 @@ defineProps<Props>()
           $ {{ product.price }}
         </p>
 
-        <button
-          class="mt-4 rounded-full bg-linear-to-r from-pink-500 to-purple-500 px-5 py-2 font-semibold text-white shadow-md transition duration-300 hover:from-purple-500 hover:to-pink-500 hover:shadow-[0_0_15px_rgba(168,85,247,0.8)]"
+      <div class="mt-4 flex justify-center gap-3">
+        <RouterLink
+          :to="`/product/${product.id}`"
+          class="rounded-full bg-white px-5 py-2 font-semibold text-pink-600 shadow-md transition hover:bg-pink-50"
         >
           View Details
-        </button>
+        </RouterLink>
+
+
+      </div>
       </div>
     </article>
   </div>

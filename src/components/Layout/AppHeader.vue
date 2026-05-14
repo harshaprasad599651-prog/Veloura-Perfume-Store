@@ -1,4 +1,13 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useCart } from '../../composables/useCart'
+
+const { cartItems } = useCart()
+
+const cartCount = computed(() =>
+  cartItems.value.reduce((total, item) => total + item.quantity, 0),
+)
+</script>
 
 <template>
   <header class="sticky top-0 z-50 bg-[#dedede] shadow-[0_6px_14px_rgba(236,72,153,0.25)]">
@@ -38,9 +47,19 @@
 
       <!-- Right Buttons -->
       <div class="flex items-center gap-2">
-        <button class="flex h-9 w-9 items-center justify-center rounded-md bg-[#050b34] text-[18px] shadow-[0_0_8px_rgba(37,99,235,0.8)]">
+        <RouterLink
+          to="/cart"
+          class="relative flex h-9 w-9 items-center justify-center rounded-md bg-[#050b34] text-[18px] shadow-[0_0_8px_rgba(37,99,235,0.8)]"
+        >
           🛒
-        </button>
+
+          <span
+            v-if="cartCount > 0"
+            class="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-pink-500 text-xs font-bold text-white"
+          >
+            {{ cartCount }}
+          </span>
+        </RouterLink>
 
         <button class="flex h-9 w-9 items-center justify-center rounded-md bg-[#080022] text-[18px] shadow-[0_0_8px_rgba(168,85,247,0.8)]">
           🌙
